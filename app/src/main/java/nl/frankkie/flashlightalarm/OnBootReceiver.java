@@ -1,4 +1,4 @@
-package nl.frankkie.flashlightalarmclock;
+package nl.frankkie.flashlightalarm;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

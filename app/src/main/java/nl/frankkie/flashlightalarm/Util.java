@@ -1,4 +1,4 @@
-package nl.frankkie.flashlightalarmclock;
+package nl.frankkie.flashlightalarm;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

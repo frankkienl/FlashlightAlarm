@@ -1,19 +1,17 @@
-package nl.frankkie.flashlightalarmclock;
+package nl.frankkie.flashlightalarm;
 
 import android.app.Activity;
-import android.app.KeyguardManager;
-import android.app.KeyguardManager.KeyguardLock;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.os.Vibrator;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 /**
- *
  * @author FrankkieNL
  */
 public class AlarmActivity extends Activity {
@@ -24,6 +22,7 @@ public class AlarmActivity extends Activity {
     boolean isOn = false;
     boolean go = true; //should do flashing, kill-switch
     public static long FLASHING_DELAY = 100;
+    Vibrator vib;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +48,11 @@ public class AlarmActivity extends Activity {
 
         getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
-                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+                        | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                        | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                        | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                        | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                        | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
         );
 
     }
@@ -65,6 +64,7 @@ public class AlarmActivity extends Activity {
 
             public void onClick(View v) {
                 flash.off();
+                vib.cancel();
                 go = false;
                 findViewById(R.id.alarm_stop_flashing).setKeepScreenOn(false);
                 finish(); //kill activity
@@ -74,19 +74,25 @@ public class AlarmActivity extends Activity {
     }
 
     public void startFlashing() {
+        if (vib == null) {
+            vib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        }
         handler.postDelayed(new Runnable() {
 
             public void run() {
                 if (!go) {
                     flash.off();
+                    vib.cancel();
                     findViewById(R.id.alarm_stop_flashing).setKeepScreenOn(false);
                     return;
                 }
                 if (isOn) {
                     flash.off();
+                    vib.cancel();
                     isOn = false;
                 } else {
                     flash.on();
+                    vib.vibrate(FLASHING_DELAY);
                     isOn = true;
                 }
                 startFlashing(); //next flash

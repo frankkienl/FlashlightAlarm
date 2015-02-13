@@ -1,4 +1,4 @@
-package nl.frankkie.flashlightalarmclock;
+package nl.frankkie.flashlightalarm;
 
 import android.app.Activity;
 import android.app.TimePickerDialog;
